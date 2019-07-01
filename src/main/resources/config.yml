@@ -1,0 +1,6 @@
+# The Configuration File for Steve's EasyHeads Plugin
+# Make sure all custom message text is inside " "
+# Example: - "Custom Text"
+# -----
+player-heads-only: false
+message-prefix: "[EasyHeads] "

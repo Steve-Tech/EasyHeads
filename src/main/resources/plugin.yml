@@ -1,0 +1,25 @@
+name: EasyHeads
+main: me.steve8playz.EasyHeads
+version: 1.0
+description: A Simple way to change the players on heads
+author: Steve8Playz
+api-version: 1.13
+commands:
+  EasyHeads:
+    description: The Admin Command for the Plugin EasyHeads
+    usage: /<command> <reload/variable> [value]
+    permission: EasyHeads.admin
+    permission-message: You don't have permission to use this command!
+    default: false
+  SetHead:
+    description: Sets the head currently held to a players head
+    usage: /<command> <player>
+    permission: EasyHeads.sethead
+    permission-message: You don't have permission to use this command!
+    default: true
+  GetHead:
+    description: Gets the head currently held to a players head
+    usage: /<command> <player>
+    permission: EasyHeads.gethead
+    permission-message: You don't have permission to use this command!
+    default: false
