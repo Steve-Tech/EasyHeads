@@ -1,9 +1,9 @@
 # EasyHeads ![Spigot API Version](https://img.shields.io/badge/Spigot%20API%20Version-1.13-brightgreen.svg)
 A Simple way to change the players on heads.
 ### Commands:
-* /EasyHeads <reload/variable> [value]
-* /SetHead <player>
-* /GetHead <player>
+* /EasyHeads \<reload/variable\> \[value\]
+* /SetHead \<player\>
+* /GetHead \<player\>
 ### Permissions:
 * /EasyHeads: EasyHeads.admin
 * /EasyHeads reload: EasyHeads.admin.reload
