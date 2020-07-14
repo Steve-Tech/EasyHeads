@@ -96,29 +96,11 @@ public class EasyHeads extends JavaPlugin implements Listener {
         if (player.hasPermission("EasyHeads.clickhead")) {
             if (getConfig().getBoolean("player-heads-only")) {
                 if (player.getInventory().getItemInMainHand().getType() == Material.PLAYER_HEAD) {
-                    int itemAmount = player.getInventory().getItemInMainHand().getAmount();
-                    if (entity instanceof Player) {
-                        Player other = (Player) entity;
-                        player.getInventory().setItemInMainHand(getHead(other.getName(), other.getName() + "'s Head", itemAmount));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + other + "'s head");
-
-                    } else {
-                        player.getInventory().setItemInMainHand(getHead("MHF_" + EntityToName(entity), EntityToName(entity) + " Head", itemAmount));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to a " + EntityToName(entity) + " head");
-                    }
+                    setHead(player, entity);
                 }
             } else {
                 if (player.getInventory().getItemInMainHand().getType() == Material.PLAYER_HEAD || player.getInventory().getItemInMainHand().getType() == Material.CREEPER_HEAD || player.getInventory().getItemInMainHand().getType() == Material.ZOMBIE_HEAD) {
-                    int itemAmount = player.getInventory().getItemInMainHand().getAmount();
-                    if (entity instanceof Player) {
-                        Player other = (Player) entity;
-                        player.getInventory().setItemInMainHand(getHead(other.getName(), other.getName() + "'s Head", itemAmount));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + other + "'s head");
-
-                    } else {
-                        player.getInventory().setItemInMainHand(getHead("MHF_" + EntityToName(entity), EntityToName(entity) + " Head", itemAmount));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to a " + EntityToName(entity) + " head");
-                    }
+                    setHead(player, entity);
                 } else {
                     if (player.getInventory().getItemInMainHand().getType() == Material.DRAGON_HEAD)
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.RED + "You need to be holding a cube head in your main hand to set heads to this entity");
@@ -126,6 +108,22 @@ public class EasyHeads extends JavaPlugin implements Listener {
                     //    player.sendMessage(messagePrefix + ChatColor.RED + "You need to be holding a head in your main hand to do this");
                 }
             }
+        }
+    }
+
+    private void setHead(Player player, Entity entity) {
+        int itemAmount = player.getInventory().getItemInMainHand().getAmount();
+        if (entity instanceof Player) {
+            Player other = (Player) entity;
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                player.getInventory().setItemInMainHand(getHead(other.getName(), other.getName() + "'s Head", itemAmount));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + other + "'s head");
+            });
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                player.getInventory().setItemInMainHand(getHead("MHF_" + EntityToName(entity), EntityToName(entity) + " Head", itemAmount));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to a " + EntityToName(entity) + " head");
+            });
         }
     }
 
@@ -140,18 +138,20 @@ public class EasyHeads extends JavaPlugin implements Listener {
                     if (getConfig().getBoolean("player-heads-only")) {
                         if (player.getInventory().getItemInMainHand().getType() == Material.PLAYER_HEAD) {
                             int itemAmount = player.getInventory().getItemInMainHand().getAmount();
-                            inventory.setItemInMainHand(getHead(args[0], args[0] + "'s Head", itemAmount));
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + args[0] + "'s head");
-
+                            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                                inventory.setItemInMainHand(getHead(args[0], args[0] + "'s Head", itemAmount));
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + args[0] + "'s head");
+                            });
                         } else {
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.RED + "You need to be holding a player head in your main hand to do this");
                         }
                     } else {
                         if (player.getInventory().getItemInMainHand().getType() == Material.PLAYER_HEAD || player.getInventory().getItemInMainHand().getType() == Material.CREEPER_HEAD || player.getInventory().getItemInMainHand().getType() == Material.ZOMBIE_HEAD) {
                             int itemAmount = player.getInventory().getItemInMainHand().getAmount();
-                            inventory.setItemInMainHand(getHead(args[0], args[0] + "'s Head", itemAmount));
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + args[0] + "'s head");
-
+                            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                                inventory.setItemInMainHand(getHead(args[0], args[0] + "'s Head", itemAmount));
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Set head in hand to " + args[0] + "'s head");
+                            });
                         } else {
                             if (player.getInventory().getItemInMainHand().getType() == Material.DRAGON_HEAD)
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.RED + "You need to be holding a cube head in your main hand to do this");
@@ -167,10 +167,15 @@ public class EasyHeads extends JavaPlugin implements Listener {
             // BEGIN GetHead Command
             if ((cmd.getName().equalsIgnoreCase("GetHead")) && (sender.hasPermission("EasyHeads.gethead"))) {
                 if (args.length == 1 || args.length == 2) {
-                    if (args.length == 1) player.getInventory().addItem(getHead(args[0], args[0] + "'s Head", 1));
+                    if (args.length == 1)
+                        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                            player.getInventory().addItem(getHead(args[0], args[0] + "'s Head", 1));
+                        });
                     else if (args.length == 2)
-                        player.getInventory().addItem(getHead(args[0], args[0] + "'s Head", Integer.parseInt(args[1])));
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Got head of " + args[0]);
+                        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                            player.getInventory().addItem(getHead(args[0], args[0] + "'s Head", Integer.parseInt(args[1])));
+                        });
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.AQUA + "Got head of " + args[0]);
                 } else {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-prefix")) + ChatColor.RED + "Usage: /GetHead <player> [amount]");
                 }
